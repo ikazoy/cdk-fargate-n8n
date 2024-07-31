@@ -81,6 +81,7 @@ export class N8NStack extends Stack {
     super(scope, id, {
       env: {
         region: props.region || 'eu-central-1',
+        account: process.env.CDK_DEFAULT_ACCOUNT,
       },
     })
 
@@ -171,7 +172,7 @@ export class N8NStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
       instanceType: InstanceType.of(
         InstanceClass.T4G,
-        InstanceSize.MEDIUM
+        InstanceSize.SMALL
       ),
     })
 
@@ -186,7 +187,7 @@ export class N8NStack extends Stack {
       engine: 'redis',
       engineVersion: '7.0',
       autoMinorVersionUpgrade: false,
-      cacheNodeType: 'cache.t4g.medium',
+      cacheNodeType: 'cache.t2.micro',
       numCacheNodes: 1,
       cacheSubnetGroupName: redisSubnetGroup.ref,
       vpcSecurityGroupIds: [this.securityGroups.redis.securityGroupId],
@@ -263,7 +264,7 @@ export class N8NStack extends Stack {
     )
 
     const container = taskDefinition.addContainer(`n8n-${serviceName}`, {
-      image: ContainerImage.fromRegistry('n8nio/n8n:1.0.4'),
+      image: ContainerImage.fromRegistry('n8nio/n8n:latest'),
       command: [...(serviceName === 'main' ? ['start'] : serviceName === 'worker' ? ['worker', '--concurrency=20'] : [serviceName])],
       environment: {
         N8N_DIAGNOSTICS_ENABLED: 'true',
