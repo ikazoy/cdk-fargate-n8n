@@ -381,6 +381,7 @@ export class N8NStack extends Stack {
             ? [
               ListenerCondition.pathPatterns([
                 '/webhook/*',
+                '/form/*',
                 '/webhook-waiting/*',
               ]),
             ]
